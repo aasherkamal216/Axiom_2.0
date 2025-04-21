@@ -1,5 +1,5 @@
-# Use the official Python 3.11 slim image as the base
-FROM python:3.1-slim
+# Use the official Python 3.12 slim image as the base
+FROM python:3.12-slim
 
 # --- Install System Dependencies, uv, and Node.js/npm/npx ---
 # Install curl (for uv script), nodejs & npm (for npx), git (optional, but sometimes needed by deps)
