@@ -1,5 +1,4 @@
 import chainlit as cl
-import asyncio
 import logging
 from typing import Optional
 
@@ -15,6 +14,19 @@ logger = logging.getLogger(__name__)
 SESSION_AGENT_KEY = "axiom_agent"
 SESSION_HISTORY_KEY = "chat_history"
 SESSION_MCP_SERVERS_KEY = "mcp_servers"
+
+#################################
+# User Authentication
+#################################
+@cl.oauth_callback
+def oauth_callback(
+  provider_id: str,
+  token: str,
+  raw_user_data: dict[str, str],
+  default_user: cl.User,
+) -> Optional[cl.User]:
+
+  return default_user
 
 @cl.on_chat_start
 async def on_chat_start():
