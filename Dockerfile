@@ -20,7 +20,8 @@ RUN apt-get update && \
 RUN mkdir -p /.cache/uv
 
 # Copy only the pyproject.toml file first to leverage Docker layer caching
-COPY pyproject.toml .
+COPY pyproject.toml ./
+COPY README.md ./
 
 # Install Python packages as root using uv sync
 RUN uv sync && \
@@ -30,7 +31,6 @@ RUN uv sync && \
 RUN useradd -m -u 1000 user && \
     chown -R user:user /.cache/uv
 
-# Switch to the non-root user
 USER user
 
 # --- Environment Setup ---
@@ -54,7 +54,7 @@ COPY --chown=user:user ./chainlit_ui.py ./chainlit_ui.py
 COPY --chown=user:user ./mcp.json ./mcp.json
 COPY --chown=user:user ./src ./src
 COPY --chown=user:user ./public ./public
-COPY --chown=user:user ./README.md ./README.md
+
 # --- Runtime ---
 # Expose the port Chainlit will run on (standard HF Spaces port)
 EXPOSE 7860
