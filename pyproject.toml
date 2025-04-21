@@ -4,4 +4,8 @@ version = "0.1.0"
 description = "An Advanced version of Axiom Agent"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "chainlit>=2.5.5",
+    "openai-agents>=0.0.11",
+    "python-dotenv>=1.1.0",
+]
