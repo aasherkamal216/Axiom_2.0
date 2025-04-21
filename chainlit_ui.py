@@ -29,8 +29,6 @@ async def on_chat_start():
     try:
         loaded_mcp_servers = load_mcp_servers_from_config()
 
-        await cl.Message(content=f"Attempting to start {len(loaded_mcp_servers)} MCP server(s)...").send()
-
     except FileNotFoundError:
         await cl.ErrorMessage(content=f"Fatal Error: MCP configuration file not found at '{settings.mcp_config_path}'. Agent cannot start.").send()
         return 
