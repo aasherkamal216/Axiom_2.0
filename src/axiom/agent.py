@@ -22,14 +22,16 @@ class AxiomAgent:
         model: Optional[str] = None,
         tools: Optional[list[Tool]] = None,
         mcp_servers: Optional[list[MCPServer]] = None,
+        api_key: Optional[str] = None,
+        base_url: Optional[str] = None,
     ):
-        self._api_key = settings.GOOGLE_API_KEY
-        self.base_url = settings.BASE_URL
+        self._api_key = api_key or settings.GOOGLE_API_KEY
+        self.base_url = base_url or settings.BASE_URL
         self.model_name = model or settings.DEFAULT_MODEL
         
         self._client: AsyncOpenAI = AsyncOpenAI(
             api_key=self._api_key,
-            base_url=self._base_url,
+            base_url=self.base_url,
         )
 
         self.agent = Agent(
