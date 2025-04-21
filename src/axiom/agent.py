@@ -35,8 +35,8 @@ class AxiomAgent:
         )
 
         self.agent = Agent(
-            name="Axiom 2.0",
-            instructions=AXIOM_AGENT_PROMPT,
+            name=settings.AGENT_NAME,
+            instructions=AXIOM_AGENT_PROMPT or "You are a helpful assistant.",
             mcp_servers=mcp_servers or [],
             tools=tools or [],
         )
@@ -51,29 +51,55 @@ class AxiomAgent:
 
         return RunConfig(
             model=model_instance,
-            tracing_disabled=True,
+            tracing_disabled=not settings.TRACING_ENABLED,
         )
 
-    async def run_agent(self, input: str | list[dict[str, str]]):
+    async def run_agent(self, chat_history: str | list[dict[str, str]]) -> str:
+        """
+        Runs the agent with the given chat history and returns the final response.
+
+        Args:
+            chat_history: A list of message dictionaries (e.g., [{"role": "user", "content": "Hi"}]).
+
+        Returns:
+            The final text output from the agent.
+        """
         config = self._get_run_config()
 
-        result = await Runner.run(
-            starting_agent=self.agent,
-            input=input,
-            run_config=config
-        )
-        return result.final_output
+        try:
+            result = await Runner.run(
+                starting_agent=self.agent,
+                input=chat_history,
+                run_config=config
+            )
+            return result.final_output
 
-    async def stream_agent(self, input: str | list[dict[str, str]]) -> AsyncGenerator:
+        except Exception as e:
+            return f"An error occurred during processing: {e}"
+
+    async def stream_agent(self, chat_history: str | list[dict[str, str]]) -> AsyncGenerator[str, None]:
+        """
+        Runs the agent with the given chat history and streams the response tokens.
+
+        Args:
+            chat_history: A list of message dictionaries.
+
+        Yields:
+            String tokens of the agent's response.
+        """ 
         config = self._get_run_config()
 
-        result = Runner.run_streamed(
-            starting_agent=self.agent,
-            input=input,
-            run_config=config
-        )
-        async for event in result.stream_events():
-            if (event.type == "raw_response_event" and 
-                isinstance(event.data, ResponseTextDeltaEvent)):
-                if token := event.data.delta:
-                    yield token
+        try:
+            result = Runner.run_streamed(
+                starting_agent=self.agent,
+                input=chat_history,
+                run_config=config
+            )
+            async for event in result.stream_events():
+                if (event.type == "raw_response_event" and 
+                    isinstance(event.data, ResponseTextDeltaEvent)):
+                    if token := event.data.delta:
+                        yield token
+        
+        except Exception as e:
+            yield f"\n[Error during streaming: {e}]\n"
