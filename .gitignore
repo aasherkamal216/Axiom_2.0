@@ -34,3 +34,5 @@ ENV/
 
 # Project specific
 test_axiom/
+.chainlit/
+.files/

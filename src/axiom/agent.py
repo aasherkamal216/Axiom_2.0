@@ -13,7 +13,7 @@ from agents.mcp import MCPServer
 from .config import settings
 from .prompts import AXIOM_AGENT_PROMPT
 
-from types import AsyncGeneratorType
+from typing_extensions import AsyncGenerator
 
 class AxiomAgent:
     def __init__(
@@ -29,8 +29,8 @@ class AxiomAgent:
         self.agent = Agent(
             name="Axiom 2.0",
             instructions=AXIOM_AGENT_PROMPT,
-            mcp_servers=mcp_servers,
-            tools=tools,
+            mcp_servers=mcp_servers if mcp_servers is not None else [],
+            tools=tools if tools is not None else [],
         )
 
     def _get_model_config(self):
@@ -59,7 +59,7 @@ class AxiomAgent:
     async def stream_agent(self, input: str | list[dict[str, str]]) -> AsyncGenerator:
         config = self._get_model_config()
 
-        result = await Runner.run_streamed(
+        result = Runner.run_streamed(
             starting_agent=self.agent,
             input=input,
             run_config=config
