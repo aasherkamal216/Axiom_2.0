@@ -80,8 +80,6 @@ def load_mcp_servers_from_config(config_path: Path = settings.MCP_CONFIG_PATH) -
         logger.error(f"MCP configuration file not found: {config_path}")
         raise FileNotFoundError(f"MCP configuration file not found: {config_path}")
 
-    logger.info(f"Loading MCP servers from: {config_path}")
-    
     # Allow json.JSONDecodeError to propagate if file is invalid JSON
     with open(config_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -104,7 +102,6 @@ def load_mcp_servers_from_config(config_path: Path = settings.MCP_CONFIG_PATH) -
                     }
                 )
             servers.append(server_instance)
-            logger.info(f"Prepared MCP Server: {name}")
 
         except (ValidationError, Exception) as e:
             logger.warning(f"Skipping MCP server '{name}' due to configuration error: {e}")

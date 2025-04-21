@@ -93,6 +93,7 @@ class AxiomAgent:
             result = Runner.run_streamed(
                 starting_agent=self.agent,
                 input=chat_history,
+                max_turns=20,
                 run_config=config
             )
             async for event in result.stream_events():
