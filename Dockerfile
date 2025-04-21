@@ -62,4 +62,4 @@ EXPOSE 7860
 # Define the command to run the Chainlit application
 # Listen on all interfaces (0.0.0.0) on the designated port
 # Do NOT use the --watch (-w) flag in production
-CMD ["chainlit", "run", "chainlit_ui.py", "--host", "0.0.0.0", "--port", "7860"]
+CMD ["uv","run", "chainlit", "run", "chainlit_ui.py", "--host", "0.0.0.0", "--port", "7860"]
