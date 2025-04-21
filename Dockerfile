@@ -54,6 +54,7 @@ COPY --chown=user:user ./chainlit_ui.py ./chainlit_ui.py
 COPY --chown=user:user ./mcp.json ./mcp.json
 COPY --chown=user:user ./src ./src
 COPY --chown=user:user ./public ./public
+COPY --chown=user:user ./chainlit.yaml ./chainlit.yaml
 
 # --- Runtime ---
 # Expose the port Chainlit will run on (standard HF Spaces port)
