@@ -12,8 +12,9 @@ class Settings(BaseSettings):
     """
     Configuration settings for the Axiom 2.0 Agent.
     """
-    MODEL_PROVIDER: str = "google"
-    MODEL_API_KEY: str = os.getenv("GOOGLE_API_KEY")
+    GOOGLE_API_KEY: str
+    DEFAULT_MODEL: str = "gemini-2.0-flash"
+    BASE_URL: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
     
     AVAILABLE_MODELS: list[str] = [
         "gemini-2.0-flash", 
@@ -21,10 +22,8 @@ class Settings(BaseSettings):
         "gemini-2.0-flash-thinking-exp-1219",
         "gemini-2.5-pro-exp-03-25",
         "gemini-2.5-flash-preview-04-17",
-        
     ]
-    DEFAULT_MODEL: str = "gemini-2.0-flash"
-
+    
     MAX_DOCS_TOKEN_LIMIT: int = 20000  # Maximum tokens to retrieve from the documentations
 
 settings = Settings()
