@@ -23,10 +23,8 @@ RUN mkdir -p /.cache/uv
 COPY pyproject.toml .
 
 # Install Python dependencies using uv sync based on pyproject.toml
-# This reads dependencies and installs them efficiently
-# Remove the uv cache after installation if not needed later to save space
-RUN uv sync --system && \
-    rm -rf /.cache/uv/*
+RUN uv sync && \
+    rm -rf /.uv
 
 # --- Non-Root User Setup ---
 # Create a non-root user 'user' with ID 1000 and create their home directory
