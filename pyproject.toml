@@ -10,11 +10,5 @@ dependencies = [
     "prompt-toolkit>=3.0.51",
     "python-dotenv>=1.1.0",
     "rich>=14.0.0",
+    "websockets>=15.0.1",
 ]
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/axiom"] 
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
