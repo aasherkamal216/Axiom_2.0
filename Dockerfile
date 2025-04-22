@@ -60,6 +60,7 @@ COPY --chown=user:user ./mcp.json ./mcp.json
 COPY --chown=user:user ./src ./src
 COPY --chown=user:user ./public ./public
 COPY --chown=user:user ./chainlit.yaml ./chainlit.yaml
+COPY --chown=user:user ./chainlit.md ./chainlit.md
 
 # --- Runtime ---
 # Expose the port Chainlit will run on (standard HF Spaces port)
