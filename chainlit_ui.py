@@ -6,6 +6,7 @@ from typing import Optional
 
 from src.axiom.agent import AxiomAgent
 from src.axiom.config import settings, load_mcp_servers_from_config
+from src.axiom.prompts import AXIOM_AGENT_PROMPT, AXIOM_ASSISTANT_PROMPT
 
 from agents.mcp import MCPServer 
 
@@ -44,8 +45,8 @@ async def set_starters():
             ),
 
         cl.Starter(
-            label="How to use OpenAI Agents",
-            message="How to use OpenAI Agents SDK? Create some agents using this SDK",
+            label="How to use Autogent",
+            message="How to use Autogen? Create some agents using Autogen",
             icon="/public/msg_icons/usb.png",
             ),
         cl.Starter(
@@ -77,7 +78,6 @@ async def chat_profile():
 #################################
 @cl.on_chat_start
 async def on_chat_start():
-
     # Initialize chat history and MCP servers
     cl.user_session.set(SESSION_HISTORY_KEY, [])
     cl.user_session.set(SESSION_MCP_SERVERS_KEY, [])
@@ -111,11 +111,10 @@ async def on_chat_start():
 
         # Store only the successfully started servers for later cleanup
         cl.user_session.set(SESSION_MCP_SERVERS_KEY, started_mcp_servers) 
-    
-    # 3. Initialize the Axiom Agent
-    agent = AxiomAgent(mcp_servers=started_mcp_servers) 
-    cl.user_session.set(SESSION_AGENT_KEY, agent)
 
+#################################
+# MCP Server Cleanup
+#################################
 async def cleanup_mcp_servers():
     started_mcp_servers = cl.user_session.get(SESSION_MCP_SERVERS_KEY, [])
     if not started_mcp_servers:
@@ -136,10 +135,29 @@ async def on_chat_end():
     logger.info("Chat session ending.")
     await cleanup_mcp_servers()
 
+#################################
+# User Message Handler
+#################################
 @cl.on_message
 async def on_message(message: cl.Message):
-    agent = cl.user_session.get(SESSION_AGENT_KEY)
+    started_mcp_servers = cl.user_session.get(SESSION_MCP_SERVERS_KEY)
     chat_history: list[dict] = cl.user_session.get(SESSION_HISTORY_KEY, []) 
+    
+    # Initialize the Axiom Agent
+    axiom_mode = cl.user_session.get("chat_profile")
+    
+    # Filter MCP servers based on chat profile
+    if axiom_mode == "Assistant":
+        # For Assistant mode, only use context7 MCP server
+        filtered_servers = [server for server in started_mcp_servers if server.name.lower() == "context7"]
+    else:
+        # For Agent mode, use all MCP servers
+        filtered_servers = started_mcp_servers
+
+    agent = AxiomAgent(
+        mcp_servers=filtered_servers,
+        prompt=AXIOM_AGENT_PROMPT if axiom_mode == "Agent✨" else AXIOM_ASSISTANT_PROMPT,
+        )
 
     # Add user message to history
     chat_history.append({"role": "user", "content": message.content})

@@ -20,6 +20,7 @@ class AxiomAgent:
     def __init__(
         self,
         model: Optional[str] = None,
+        prompt: Optional[str] = None,
         tools: Optional[list[Tool]] = None,
         mcp_servers: Optional[list[MCPServer]] = None,
         api_key: Optional[str] = None,
@@ -36,7 +37,7 @@ class AxiomAgent:
 
         self.agent = Agent(
             name=settings.AGENT_NAME,
-            instructions=AXIOM_AGENT_PROMPT or "You are a helpful assistant.",
+            instructions=prompt or AXIOM_AGENT_PROMPT,
             mcp_servers=mcp_servers or [],
             tools=tools or [],
         )
