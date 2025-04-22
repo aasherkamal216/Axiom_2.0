@@ -14,7 +14,9 @@ Axiom 2.0 is an upgrade of Axiom 1.0, it has the following more features:
 *   🤖 **Interactive Chat Interface:** Built with Chainlit for a smooth conversational experience.
 *   📚 **Advanced Documentation Access:** Utilizes a dedicated MCP server to retrieve and apply technical information from various sources, ensuring code and explanations are accurate and up-to-date.
 *   🧠 **Strategic Planning:** Employs a **Sequential Thinking MCP** tool to break down complex requests, plan code architecture, and structure its responses effectively.
-*   🛠️ **Configurable Settings:** Easy adjustment of model versions, API keys, and MCP server configurations via environment variables and `mcp.json`.
+*   🧪 **Two Modes:** 
+    1. **Agent Mode:** Ideal for complex tasks like end-to-end projects and full-stack development.
+    2. **Assistant Mode:** Suited for quick information retrieval and answering questions.
 *   📦 **Containerized Deployment:** Includes a `Dockerfile` for easy deployment to platforms like Hugging Face Spaces or Docker environments.
 
 ## How it Works
