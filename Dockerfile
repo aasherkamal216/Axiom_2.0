@@ -7,13 +7,18 @@ FROM python:3.12-slim
 # Install npx globally using npm (often included with recent npm, but explicit install is safer)
 # Clean up apt cache to reduce image size
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl nodejs npm git && \
+    apt-get install -y --no-install-recommends curl git ca-certificates gnupg && \
+    mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+    NODE_MAJOR=20 && \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
+    apt-get update && \
+    apt-get install nodejs -y && \
     curl -LsSf https://astral.sh/uv/install.sh | sh && \
     mv /root/.local/bin/uv /usr/local/bin/uv && \
-    # mv /root/.local/bin/uvx /usr/local/bin/uvx # uvx might not be needed unless you use uv run directly
-    npm install -g npx && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
 
 # --- Python Dependency Installation (as root for system-wide access) ---
 # Create cache directory for uv
