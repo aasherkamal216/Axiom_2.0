@@ -1,9 +1,12 @@
 import chainlit as cl
+from chainlit.input_widget import Select, TextInput
+
 import logging
 from typing import Optional
 
 from src.axiom.agent import AxiomAgent
 from src.axiom.config import settings, load_mcp_servers_from_config
+
 from agents.mcp import MCPServer 
 
 # Configure logging for the UI module
@@ -28,9 +31,54 @@ def oauth_callback(
 
   return default_user
 
+#################################
+# Quick Starter Questions
+#################################
+@cl.set_starters
+async def set_starters():
+    return [
+        cl.Starter(
+            label="LangGraph Agents Creation",
+            message="Create a Multi-Agent customer support system using LangGraph swarm.",
+            icon="/public/msg_icons/chatbot.png",
+            ),
+
+        cl.Starter(
+            label="How to use OpenAI Agents",
+            message="How to use OpenAI Agents SDK? Create some agents using this SDK",
+            icon="/public/msg_icons/usb.png",
+            ),
+        cl.Starter(
+            label="JWT Auth Implementation",
+            message="How to implement JWT authentication in FastAPi? Create a complete project.",
+            icon="/public/msg_icons/tools.png",
+            ),
+
+        ]
+#################################
+# Response modes for Axiom
+#################################
+@cl.set_chat_profiles
+async def chat_profile():
+    return [
+        cl.ChatProfile(
+            name="Agent✨",
+            markdown_description= "Ideal for complex tasks like complete projects building, and full-stack apps creation."
+        ),
+        cl.ChatProfile(
+            name="Assistant",
+            markdown_description="Suited for quick information retrieval and answering questions."
+
+        ),
+    ]
+
+#################################
+# Chat Settings
+#################################
 @cl.on_chat_start
 async def on_chat_start():
 
+    # Initialize chat history and MCP servers
     cl.user_session.set(SESSION_HISTORY_KEY, [])
     cl.user_session.set(SESSION_MCP_SERVERS_KEY, [])
 
