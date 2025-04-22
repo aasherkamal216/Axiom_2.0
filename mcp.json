@@ -4,14 +4,14 @@
         "command": "npx",
         "args": ["-y", "@upstash/context7-mcp@latest"]
       },
-      "sequential-thinking": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ]
+      "tavily-mcp": {
+        "command": "npx",
+        "args": ["-y", "tavily-mcp@0.1.2"],
+        "env": {
+          "TAVILY_API_KEY": ""
+        }
+      }
     }
-  }
   }
   
   

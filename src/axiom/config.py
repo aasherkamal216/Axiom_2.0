@@ -26,6 +26,7 @@ class MCPServerConfig(BaseSettings):
     """Represents the configuration for a single MCP server in mcp.json."""
     command: str
     args: List[str]
+    env: Optional[dict[str, str]] = None
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -36,9 +37,8 @@ class Settings(BaseSettings):
     """
     # --- API Configuration ---
     GOOGLE_API_KEY: str
-    DEFAULT_MODEL: str = "gemini-2.0-flash"
     BASE_URL: str = "https://generativelanguage.googleapis.com/v1beta/openai/"
-    
+
     # --- Model Configuration ---
     AVAILABLE_MODELS: list[str] = [
         "gemini-2.0-flash", 
@@ -47,6 +47,9 @@ class Settings(BaseSettings):
         "gemini-2.5-pro-exp-03-25",
         "gemini-2.5-flash-preview-04-17",
     ]
+    
+    DEFAULT_AGENT_MODEL: str = os.getenv("DEFAULT_AGENT_MODEL", "gemini-2.5-flash-preview-04-17")
+    DEFAULT_ASSISTANT_MODEL: str = os.getenv("DEFAULT_ASSISTANT_MODEL", "gemini-2.0-flash")
 
     # --- Agent Configuration ---
     AGENT_NAME: str = "Axiom 2.0"
@@ -92,6 +95,17 @@ def load_mcp_servers_from_config(config_path: Path = settings.MCP_CONFIG_PATH) -
     # Iterate and handle individual server errors as warnings
     for name, config_dict in mcp_servers_data.items():
         try:
+            server_config = MCPServerConfig(**config_dict)
+
+            server_env = server_config.env
+
+            if name == "tavily-mcp":
+                tavily_api_key = os.environ.get("TAVILY_API_KEY")
+                if tavily_api_key:
+                    server_env["TAVILY_API_KEY"] = tavily_api_key
+                else:
+                    logger.warning("TAVILY_API_KEY environment variable not set. Tavily MCP might not function correctly.")
+
             server_config = MCPServerConfig(**config_dict) 
             
             server_instance = MCPServerStdio(
@@ -99,6 +113,7 @@ def load_mcp_servers_from_config(config_path: Path = settings.MCP_CONFIG_PATH) -
                     params={
                         "command": server_config.command,
                         "args": server_config.args,
+                        "env": server_env
                     }
                 )
             servers.append(server_instance)

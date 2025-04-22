@@ -155,7 +155,7 @@ async def on_message(message: cl.Message):
         filtered_servers = started_mcp_servers
 
     agent = AxiomAgent(
-        model="gemini-2.5-pro-exp-03-25" if axiom_mode == "Agent✨" else None,
+        model=settings.DEFAULT_AGENT_MODEL if axiom_mode == "Agent✨" else settings.DEFAULT_ASSISTANT_MODEL,
         mcp_servers=filtered_servers,
         prompt=AXIOM_AGENT_PROMPT if axiom_mode == "Agent✨" else AXIOM_ASSISTANT_PROMPT,
         )
