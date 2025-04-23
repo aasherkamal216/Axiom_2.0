@@ -5,6 +5,7 @@ description = "An Advanced version of Axiom Agent"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "agentops>=0.4.6",
     "chainlit>=2.5.5",
     "openai-agents>=0.0.11",
     "prompt-toolkit>=3.0.51",
